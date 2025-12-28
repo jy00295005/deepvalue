@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepValue 计算逻辑流程图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .stage {
+            background: linear-gradient(135deg, #f6f8fb 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .stage:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .stage-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+        
+        .stage-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .stage-content {
+            margin-left: 65px;
+        }
+        
+        .stage-description {
+            color: #4a5568;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .stage-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .detail-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .detail-content {
+            color: #718096;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .arrow {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            margin: -10px 0;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #fef5e7 0%, #fff9e6 100%);
+            border: 2px solid #f39c12;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .highlight-title {
+            color: #d68910;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .highlight-content {
+            color: #7d6608;
+            line-height: 1.6;
+        }
+        
+        .fusion-stage {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+            border: 2px solid #4caf50;
+        }
+        
+        .fusion-stage .stage-number {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        }
+        
+        .code-snippet {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+        
+        .tag.external {
+            background: #4caf50;
+        }
+        
+        .tag.internal {
+            background: #2196f3;
+        }
+        
+        .tag.output {
+            background: #ff9800;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 DeepValue 计算逻辑流程</h1>
+        <p class="subtitle">从数据采集到策略生成的完整 Pipeline</p>
+        
+        <div class="flow-diagram">
+            <!-- Stage 1: Ingestion -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">1</div>
+                    <div class="stage-title">数据采集 (Ingestion)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        从外部数据源拉取历史价格数据（OHLCV），合并多源数据并清洗，写入数据库。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">📥 数据源</div>
+                            <div class="detail-content">
+                                • Stooq (历史数据)<br>
+                                • yfinance (实时/调整后价格)<br>
+                                • 合并去重、填充缺失
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">💾 输出表</div>
+                            <div class="detail-content">
+                                • prices_raw (原始)<br>
+                                • prices_daily (清洗后)<br>
+                                • 时间范围：过去 6 年
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">🎯 覆盖范围</div>
+                            <div class="detail-content">
+                                MAG7 + QQQ<br>
+                                (AAPL, MSFT, AMZN, NVDA, META, TSLA, GOOGL, GOOG, QQQ)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 2: Features -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">2</div>
+                    <div class="stage-title">特征计算 (Features)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        基于价格历史计算技术指标、波动率、趋势强度等特征，生成 DeepValue Score。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">📊 技术指标</div>
+                            <div class="detail-content">
+                                • SMA (20/50/200日)<br>
+                                • RSI、MACD、布林带<br>
+                                • ATR (波动率)
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">🎲 DeepValue Score</div>
+                            <div class="detail-content">
+                                综合多因子打分：<br>
+                                • 价格相对位置<br>
+                                • 趋势强度<br>
+                                • 波动率调整
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">📈 百分位排名</div>
+                            <div class="detail-content">
+                                pct_rank_5y：<br>
+                                当前 Score 在过去 5 年的历史分位数
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+features_daily: symbol, date, deepvalue_score_smooth, pct_rank_5y, rsi, macd, ...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 3: Levels -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">3</div>
+                    <div class="stage-title">支撑/阻力位计算 (Levels)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        基于 Swing High/Low 和均线，计算内部结构支撑位 S1/S2/S3 和阻力位 R1/R2/R3。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">🔍 候选来源</div>
+                            <div class="detail-content">
+                                • swing_5y / swing_1y (历史低点)<br>
+                                • sma20 / sma50 / sma200<br>
+                                • 聚类去重、按强度排序
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">📐 选择规则</div>
+                            <div class="detail-content">
+                                S1: 最近且强度最高<br>
+                                S2: 更深、避免与 S1 太近<br>
+                                S3: 长期防守位
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">💾 元数据</div>
+                            <div class="detail-content">
+                                s_meta (JSON):<br>
+                                记录候选列表、选中原因、强度评分
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+levels_daily: symbol, date, s1, s2, s3, r1, r2, r3, s_meta, r_meta
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 3.5: PP Fusion (Highlight) -->
+            <div class="stage fusion-stage">
+                <div class="stage-header">
+                    <div class="stage-number">3.5</div>
+                    <div class="stage-title">Perplexity 融合 (PP Fusion) 🌐</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        读取手动保存的 Perplexity 外部支撑位快照，按融合规则调整 S1/S2（S3 不动）。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">📂 数据源</div>
+                            <div class="detail-content">
+                                <strong>本地 JSON 文件</strong><br>
+                                data/external/perplexity_supports/<br>
+                                pp_supports_YYYY-MM-DD.json
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">🎯 融合策略</div>
+                            <div class="detail-content">
+                                <strong>S1</strong>: Soft-blend (加权平均 + clamp)<br>
+                                <strong>S2</strong>: 条件替换（仅当内部 S2 弱时）<br>
+                                <strong>S3</strong>: 不受 PP 影响
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">⚖️ 权重控制</div>
+                            <div class="detail-content">
+                                PP 最大权重: 0.6<br>
+                                置信度阈值: 0.4<br>
+                                derived_level confidence ≤ 0.40
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <div class="highlight-title">🔑 关键设计：独立外部信号源</div>
+                        <div class="highlight-content">
+                            • Perplexity <strong>不接收</strong>历史价格数据，只基于公开技术分析/研报<br>
+                            • 每天手动保存快照（避免 API 成本 + 保证可复现）<br>
+                            • 融合结果写回 levels_daily.s1/s2 + s_meta.pp_fusion<br>
+                            • 报告会显示 PP 状态/置信度/区间
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+# 融合后更新 levels_daily
+UPDATE levels_daily SET 
+  s1 = fused_s1, 
+  s2 = fused_s2,
+  s_meta = json_set(s_meta, '$.pp_fusion', fusion_meta)
+WHERE symbol=? AND date=?
+                    </div>
+                    <span class="tag external">外部信号</span>
+                    <span class="tag">手动快照</span>
+                    <span class="tag">独立决策</span>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 4: Market State -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">4</div>
+                    <div class="stage-title">市场状态 (Market State)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        基于 QQQ 的技术指标判断市场风险偏好（risk_on / risk_off），调整仓位乘数。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">📊 判断依据</div>
+                            <div class="detail-content">
+                                • QQQ 相对 SMA50/200<br>
+                                • RSI 过热/超卖<br>
+                                • 波动率 (ATR)
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">🎚️ 输出</div>
+                            <div class="detail-content">
+                                <strong>regime</strong>: risk_on / risk_off<br>
+                                <strong>multiplier</strong>: 0.5x ~ 1.5x<br>
+                                影响后续仓位分配
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+market_state_daily: date, regime, multiplier, qqq_price, qqq_sma50, ...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 5: Baseline Policy -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">5</div>
+                    <div class="stage-title">基线策略 (Baseline Policy)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        基于确定性规则生成初始推荐：action (hold/pause/accumulate) + 梯度买入权重。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">🎯 决策规则</div>
+                            <div class="detail-content">
+                                • Score ≥ 阈值 → accumulate<br>
+                                • Score 中等 → hold<br>
+                                • Score 低 → pause_shallow
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">📊 梯度权重</div>
+                            <div class="detail-content">
+                                ladder_weights_pct:<br>
+                                S1: 10-15%<br>
+                                S2: 15-25%<br>
+                                S3: 25-35%<br>
+                                reserve: 25-65%
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">⚖️ 市场调整</div>
+                            <div class="detail-content">
+                                根据 market_state.multiplier<br>
+                                动态调整 reserve 比例
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+recommendations_daily: symbol, date, action, plan_json, explain_json, llm_used=0
+                    </div>
+                    <span class="tag internal">确定性规则</span>
+                    <span class="tag">无 LLM</span>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 6: LLM Enhancement -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">6</div>
+                    <div class="stage-title">LLM 策略增强 (Strategy Enhancement)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        对 MAG7 批量调用 OpenAI，基于融合后的 levels + 市场状态微调策略（保留 baseline 作为 fallback）。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">📝 输入上下文</div>
+                            <div class="detail-content">
+                                • 融合后的 S1/S2/S3 (来自 Stage 3.5)<br>
+                                • DeepValue Score + Rank<br>
+                                • Market regime + multiplier<br>
+                                • Baseline action + weights
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">🤖 LLM 任务</div>
+                            <div class="detail-content">
+                                <strong>批量生成</strong>（一次调用多只）：<br>
+                                • 微调 ladder_weights_pct<br>
+                                • 调整 reserve_pct<br>
+                                • 生成 explain (可解释性)
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">✅ 校验回退</div>
+                            <div class="detail-content">
+                                逐条验证 LLM 输出：<br>
+                                • 权重和 = 100%<br>
+                                • reserve ≥ 25%<br>
+                                • 不合规 → baseline_fallback
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <div class="highlight-title">💡 批量优化</div>
+                        <div class="highlight-content">
+                            原本逐只调用 LLM（9 次），现在改为<strong>批量生成</strong>（1 次），大幅降低成本与耗时。<br>
+                            同时保留逐只校验，确保每条策略都符合规则。
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+# 更新 recommendations_daily
+UPDATE recommendations_daily SET 
+  plan_json = llm_plan,
+  explain_json = llm_explain,
+  llm_used = 1
+WHERE symbol=? AND date=?
+                    </div>
+                    <span class="tag">批量 LLM</span>
+                    <span class="tag">逐条校验</span>
+                    <span class="tag">Fallback 保护</span>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- Stage 7: Reporting -->
+            <div class="stage">
+                <div class="stage-header">
+                    <div class="stage-number">7</div>
+                    <div class="stage-title">报告生成 (Reporting)</div>
+                </div>
+                <div class="stage-content">
+                    <div class="stage-description">
+                        汇总所有计算结果，生成 Markdown 格式的每日报告，展示排名、策略、PP 融合状态。
+                    </div>
+                    <div class="stage-details">
+                        <div class="detail-box">
+                            <div class="detail-title">📊 报告内容</div>
+                            <div class="detail-content">
+                                • 市场概览 (regime + top stocks)<br>
+                                • DeepValue 排名表<br>
+                                • 个股详情 (S1/S2/S3 + action + weights)<br>
+                                • PP 融合状态/置信度/区间
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">🎨 新增列</div>
+                            <div class="detail-content">
+                                <strong>PP</strong>: used(0.78) / ignored(0.00)<br>
+                                <strong>PP Band</strong>: 260.00-265.00<br>
+                                <strong>S1 Src</strong>: pp_fused / struct_5y
+                            </div>
+                        </div>
+                        <div class="detail-box">
+                            <div class="detail-title">💾 存储</div>
+                            <div class="detail-content">
+                                reports 表 (upsert):<br>
+                                report_id, date, type, content_md, meta_json
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-snippet">
+# 查看报告
+python -m src.reporting.show_report
+                    </div>
+                    <span class="tag output">Markdown 输出</span>
+                    <span class="tag output">可解释性</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #667eea;"></div>
+                <span>内部计算</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4caf50;"></div>
+                <span>外部信号融合</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff9800;"></div>
+                <span>最终输出</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
