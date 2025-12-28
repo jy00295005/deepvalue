@@ -1,0 +1,340 @@
+{
+  "as_of_date": "2025-12-26",
+  "source": "perplexity_manual_updated",
+  "note": "Updated with latest technical analyses from October-December 2025",
+  "symbols": {
+    "QQQ": {
+      "approx_price": 623.89,
+      "supports": [
+        {
+          "kind": "level",
+          "value": 565,
+          "horizon": "short_term",
+          "strength": 3,
+          "confidence": 0.75,
+          "evidence_type": "technical_level",
+          "note": "Primary support from accumulated volume clusters, tested as buying zone during pullbacks"
+        },
+        {
+          "kind": "range",
+          "low": 555,
+          "high": 560,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.70,
+          "evidence_type": "options_data",
+          "note": "Options open interest trends reinforce consolidation above this level, elevated activity around December strikes"
+        },
+        {
+          "kind": "range",
+          "low": 537,
+          "high": 541,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.80,
+          "evidence_type": "technical_level",
+          "note": "Deeper support aligning with 2024-2025 breakout zone and rising 200-day moving average"
+        }
+      ],
+      "missing_reason": null
+    },
+    "AAPL": {
+      "approx_price": 273.40,
+      "supports": [
+        {
+          "kind": "range",
+          "low": 198,
+          "high": 202,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.72,
+          "evidence_type": "technical_level",
+          "note": "Key support marking recent rebound lows and short-term volume accumulation over past six months"
+        },
+        {
+          "kind": "range",
+          "low": 205,
+          "high": 212,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.68,
+          "evidence_type": "technical_level",
+          "note": "Moving averages bolster this as intermediate support in bullish trend contexts"
+        },
+        {
+          "kind": "range",
+          "low": 164,
+          "high": 171,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.85,
+          "evidence_type": "technical_level",
+          "note": "Stronger zone that held during prior declines, aligns with deeper Fibonacci levels"
+        }
+      ],
+      "missing_reason": null
+    },
+    "MSFT": {
+      "approx_price": 487.71,
+      "supports": [
+        {
+          "kind": "level",
+          "value": 482,
+          "horizon": "short_term",
+          "strength": 3,
+          "confidence": 0.78,
+          "evidence_type": "technical_level",
+          "note": "Primary support at recent swing low with volume surges confirming institutional buying during December consolidation"
+        },
+        {
+          "kind": "range",
+          "low": 476,
+          "high": 506,
+          "horizon": "medium_term",
+          "strength": 2,
+          "confidence": 0.70,
+          "evidence_type": "technical_level",
+          "note": "100-day and 200-day moving averages provide reinforcement in neutral RSI conditions"
+        },
+        {
+          "kind": "level",
+          "value": 470,
+          "horizon": "medium_term",
+          "strength": 2,
+          "confidence": 0.65,
+          "evidence_type": "technical_level",
+          "note": "Deeper support aligning with minor pivots, potential breakdown risk if breached"
+        }
+      ],
+      "missing_reason": null
+    },
+    "AMZN": {
+      "approx_price": 232.52,
+      "supports": [
+        {
+          "kind": "range",
+          "low": 250,
+          "high": 270,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.68,
+          "evidence_type": "technical_level",
+          "note": "Support clusters marking high-timeframe pivots and gap-fill zones from early corrections"
+        },
+        {
+          "kind": "level",
+          "value": 290,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.60,
+          "evidence_type": "technical_level",
+          "note": "Intermediate support highlighted in recent trading views amid expansion pressures"
+        },
+        {
+          "kind": "range",
+          "low": 200,
+          "high": 210,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.82,
+          "evidence_type": "technical_level",
+          "note": "Stronger floor tested as early 2025 lows with psychological alignment for rebounds"
+        }
+      ],
+      "missing_reason": null
+    },
+    "NVDA": {
+      "approx_price": 190.53,
+      "supports": [
+        {
+          "kind": "level",
+          "value": 176.34,
+          "horizon": "short_term",
+          "strength": 3,
+          "confidence": 0.82,
+          "evidence_type": "technical_level",
+          "note": "Primary support at major swing low with volume confirmation during weekly consolidation near $180-$185"
+        },
+        {
+          "kind": "level",
+          "value": 178.16,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.70,
+          "evidence_type": "technical_level",
+          "note": "Minor support level near primary consolidation zone"
+        },
+        {
+          "kind": "level",
+          "value": 170,
+          "horizon": "medium_term",
+          "strength": 2,
+          "confidence": 0.75,
+          "evidence_type": "technical_level",
+          "note": "November lows aligning with breakout zones and 50-day moving averages"
+        },
+        {
+          "kind": "range",
+          "low": 162,
+          "high": 165,
+          "horizon": "medium_term",
+          "strength": 2,
+          "confidence": 0.65,
+          "evidence_type": "technical_level",
+          "note": "Breach below this level could target $140-$150 pivot areas per chart patterns and MACD signals"
+        },
+        {
+          "kind": "range",
+          "low": 140,
+          "high": 150,
+          "horizon": "long_term",
+          "strength": 3,
+          "confidence": 0.70,
+          "evidence_type": "technical_level",
+          "note": "Deeper pivot area target if medium-term supports fail"
+        }
+      ],
+      "missing_reason": null
+    },
+    "META": {
+      "approx_price": 663.29,
+      "supports": [
+        {
+          "kind": "range",
+          "low": 580,
+          "high": 600,
+          "horizon": "short_term",
+          "strength": 3,
+          "confidence": 0.80,
+          "evidence_type": "technical_level",
+          "note": "Support clusters at recent reaction zones near all-time highs with elevated options activity"
+        },
+        {
+          "kind": "level",
+          "value": 581,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.72,
+          "evidence_type": "technical_level",
+          "note": "November lows providing near-term bounces in bullish trends"
+        },
+        {
+          "kind": "range",
+          "low": 450,
+          "high": 490,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.85,
+          "evidence_type": "technical_level",
+          "note": "Stronger historical support matching 2024 liberation lows and volume accumulation"
+        }
+      ],
+      "missing_reason": null
+    },
+    "TSLA": {
+      "approx_price": 475.19,
+      "supports": [
+        {
+          "kind": "level",
+          "value": 370,
+          "horizon": "short_term",
+          "strength": 3,
+          "confidence": 0.80,
+          "evidence_type": "technical_level",
+          "note": "Primary support at critical swing low with historical peaks and trendline confluence during recent pullbacks"
+        },
+        {
+          "kind": "range",
+          "low": 407,
+          "high": 430,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.70,
+          "evidence_type": "technical_level",
+          "note": "Near-term floors from daily moving averages and channel bottoms in weekly outlooks"
+        },
+        {
+          "kind": "level",
+          "value": 300,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.75,
+          "evidence_type": "technical_level",
+          "note": "Deeper support at psychological level and prior breakout base, offering rebound potential if tested"
+        }
+      ],
+      "missing_reason": null
+    },
+    "GOOGL": {
+      "approx_price": 313.51,
+      "supports": [
+        {
+          "kind": "range",
+          "low": 185,
+          "high": 190,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.72,
+          "evidence_type": "technical_level",
+          "note": "Support clusters at recent consolidation lows with 50-day moving average reinforcement"
+        },
+        {
+          "kind": "level",
+          "value": 200,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.65,
+          "evidence_type": "technical_level",
+          "note": "Intermediate level providing upside bias if held amid neutral RSI signals"
+        },
+        {
+          "kind": "range",
+          "low": 170,
+          "high": 175,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.80,
+          "evidence_type": "technical_level",
+          "note": "Stronger zones matching volume accumulation and Fibonacci retracements from November dips"
+        }
+      ],
+      "missing_reason": null
+    },
+    "GOOG": {
+      "approx_price": 314.96,
+      "supports": [
+        {
+          "kind": "range",
+          "low": 185,
+          "high": 192,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.72,
+          "evidence_type": "technical_level",
+          "note": "Key support mirroring GOOGL, reflecting shared class structure and technical alignment"
+        },
+        {
+          "kind": "range",
+          "low": 180,
+          "high": 190,
+          "horizon": "short_term",
+          "strength": 2,
+          "confidence": 0.68,
+          "evidence_type": "technical_level",
+          "note": "Moving averages acting as dynamic supports in bullish trend continuations"
+        },
+        {
+          "kind": "range",
+          "low": 165,
+          "high": 175,
+          "horizon": "medium_term",
+          "strength": 3,
+          "confidence": 0.80,
+          "evidence_type": "technical_level",
+          "note": "Deeper floors at prior yearly lows with elevated options interest bolstering defense"
+        }
+      ],
+      "missing_reason": null
+    }
+  }
+}

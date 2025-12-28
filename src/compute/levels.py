@@ -788,9 +788,10 @@ class LevelsEngine:
         Returns dict mapping symbol -> fused levels with metadata.
         """
         from src.llm.perplexity_client import fetch_external_supports_for_date
+        from src.config.settings import MARKET_PROXY_SYMBOL
         
-        # Only fetch PP for MAG7 (cost optimization)
-        pp_symbols = [s for s in symbols if s in MAG7_SYMBOLS and s != 'GOOGL']
+        # Fetch PP for MAG7 + QQQ (cost optimization)
+        pp_symbols = [s for s in symbols if (s in MAG7_SYMBOLS or s == MARKET_PROXY_SYMBOL) and s != 'GOOGL']
         
         # Fetch external supports
         pp_bands = fetch_external_supports_for_date(date_str, pp_symbols) if pp_symbols else {}
