@@ -1,7 +1,0 @@
-pandas
-yfinance
-pandas_datareader
-sqlalchemy
-pyyaml
-loguru
-requests
