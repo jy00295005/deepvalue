@@ -382,8 +382,12 @@ class PerplexityClient:
         # Manual snapshot mode (default)
         if as_of_date:
             try:
-                snapshot = self.load_manual_snapshot(as_of_date)
-                return self._manual_to_bands(snapshot, tickers)
+                logger.info(f"Loading PP snapshot for date: {as_of_date}, tickers: {tickers}")
+                snapshot = self.load_manual_snapshot(str(as_of_date))
+                bands = self._manual_to_bands(snapshot, tickers)
+                for t, band in bands.items():
+                    logger.info(f"  {t}: missing={band.missing_data}, conf={band.confidence:.2f}, mid={band.mid}")
+                return bands
             except Exception as e:
                 logger.warning(f"Failed to load manual PP snapshot for {as_of_date}: {e}")
                 for t in tickers:
